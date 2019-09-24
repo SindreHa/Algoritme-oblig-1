@@ -34,7 +34,7 @@ public class Main extends Application {
 
     private TextField treeLevels;
     private TextField sizeRoot;
-    private TextField angle;
+    private Slider angle;
     private Slider randomFactorSlider;
     private Button drawTree;
 
@@ -48,8 +48,19 @@ public class Main extends Application {
 
         drawTree.setOnMouseClicked((e) -> {
             canvas.getChildren().clear();
-            branch(400, 500, Integer.parseInt(angle.getText()), Integer.parseInt(treeLevels.getText()));
+            if(treeLevels.getText().equals(""))
+                branch(400,500, angle.getValue(), 8);
+            else
+                branch(400,500, angle.getValue(), Integer.parseInt(treeLevels.getText()));
         });
+
+        angle.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            canvas.getChildren().clear();
+            if(treeLevels.getText().equals(""))
+                branch(400,500, angle.getValue(), 8);
+            else
+                branch(400,500, angle.getValue(), Integer.parseInt(treeLevels.getText()));
+        }));
 
         primaryStage.setTitle("Algo oblig 1");
         primaryStage.setScene(new Scene(pane, screenWidth, screenHeight));
@@ -85,7 +96,7 @@ public class Main extends Application {
         sizeRoot = new TextField();
 
         Label angleLabel = new Label("Vinkel");
-        angle = new TextField();
+        angle = new Slider();
 
         Label randomFactorSliderLabel = new Label("Tilfeldighets faktor");
         randomFactorSlider = new Slider();

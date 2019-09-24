@@ -26,7 +26,6 @@ public class Main extends Application {
     private int startY = 700;
 
     private Pane canvas;
-    private HBox infoWindow;
 
     private Slider treeLevels;
     private Slider sizeRoot;

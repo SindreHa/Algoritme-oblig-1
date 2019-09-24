@@ -36,7 +36,7 @@ public class Main extends Application {
     private TextField sizeRoot;
     private Slider angle;
     private Slider randomFactorSlider;
-    private Button drawTree;
+    private Slider tykkhet;
 
 
     @Override
@@ -46,20 +46,21 @@ public class Main extends Application {
         pane.setCenter(canvas);
         pane.setBottom(setInfoVindu());
 
-        drawTree.setOnMouseClicked((e) -> {
-            canvas.getChildren().clear();
-            if(treeLevels.getText().equals(""))
-                branch(400,500, angle.getValue(), 8);
-            else
-                branch(400,500, angle.getValue(), Integer.parseInt(treeLevels.getText()));
-        });
 
         angle.valueProperty().addListener(((observable, oldValue, newValue) -> {
             canvas.getChildren().clear();
             if(treeLevels.getText().equals(""))
-                branch(400,500, angle.getValue(), 8);
+                branch(400,500, -Math.PI/2, 8, angle.getValue(), tykkhet.getValue());
             else
-                branch(400,500, angle.getValue(), Integer.parseInt(treeLevels.getText()));
+                branch(400,500, -Math.PI/2, Integer.parseInt(treeLevels.getText()), angle.getValue(), tykkhet.getValue());
+        }));
+
+        tykkhet.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            canvas.getChildren().clear();
+            if(treeLevels.getText().equals(""))
+                branch(400,500, -Math.PI/2, 8, angle.getValue(), tykkhet.getValue());
+            else
+                branch(400,500, -Math.PI/2, Integer.parseInt(treeLevels.getText()), angle.getValue(), tykkhet.getValue());
         }));
 
         primaryStage.setTitle("Algo oblig 1");
@@ -68,19 +69,19 @@ public class Main extends Application {
     }
 
 
-    public void branch(int startX, int startY, double vinkel, int antallRekursjoner) {
+    public void branch(int startX, int startY, double vinkel, int antallRekursjoner, double greinVinkel, double tykkhet) {
         if (antallRekursjoner == 0) {
             return;
         }
         int endX = startX + (int) (Math.cos(vinkel) * antallRekursjoner * 10);
         int endY = startY + (int) (Math.sin(vinkel) * antallRekursjoner * 10);
 
-        canvas.getChildren().add(
-                new Line(startX, startY, endX, endY)
-        );
+        Line line = new Line(startX, startY, endX, endY);
+        line.setStrokeWidth(tykkhet);
+        canvas.getChildren().add(line);
 
-        branch(endX, endY, vinkel - Math.PI / 8, antallRekursjoner - 1);
-        branch(endX, endY, vinkel + Math.PI / 8, antallRekursjoner - 1);
+        branch(endX, endY, vinkel - Math.PI / greinVinkel, antallRekursjoner - 1, greinVinkel, tykkhet-1);
+        branch(endX, endY, vinkel + Math.PI / greinVinkel, antallRekursjoner - 1, greinVinkel, tykkhet-1);
     }
 
     private GridPane setInfoVindu(){
@@ -101,7 +102,9 @@ public class Main extends Application {
         Label randomFactorSliderLabel = new Label("Tilfeldighets faktor");
         randomFactorSlider = new Slider();
 
-        drawTree = new Button("Tegn tre");
+        Label strokeWidthLabel = new Label("Tykkhet");
+        tykkhet = new Slider();
+
 
         grid.add(treeLevelsLabel, 0,0);
         grid.add(treeLevels, 0,1);
@@ -115,7 +118,8 @@ public class Main extends Application {
         grid.add(randomFactorSliderLabel, 3, 0);
         grid.add(randomFactorSlider, 3,1);
 
-        grid.add(drawTree, 4, 1);
+        grid.add(strokeWidthLabel, 4, 0);
+        grid.add(tykkhet, 4,1);
 
         return grid;
     }

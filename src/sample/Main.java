@@ -9,6 +9,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import static javax.swing.JOptionPane.*;
+/**
+ *
+ @author Jan Andreas Sletta og Sindre Haavaldsen
+ *
+ */
 
 public class Main extends Application {
 
@@ -33,27 +38,18 @@ public class Main extends Application {
         launch(args);
     }
 
-    public void branch(int startX, int startY, double vinkel, int lengde) {
-        if (lengde == 0) {
+    public void branch(int startX, int startY, double vinkel, int antallRekursjoner) {
+        if (antallRekursjoner == 0) {
             return;
         }
-        int endX = startX + (int) (Math.cos(vinkel) * lengde * 10);
-        int endY = startY + (int) (Math.sin(vinkel) * lengde * 10);
+        int endX = startX + (int) (Math.cos(vinkel) * antallRekursjoner * 10);
+        int endY = startY + (int) (Math.sin(vinkel) * antallRekursjoner * 10);
 
         canvas.getChildren().add(
                 new Line(startX, startY, endX, endY)
         );
 
-        branch(endX, endY, vinkel - Math.PI / 8, lengde - 1);
-        branch(endX, endY, vinkel + Math.PI / 8, lengde - 1);
-        /*if (lengde == 0) {
-            return;
-        }
-        int endX = startX + (int) (Math.cos(Math.toRadians((vinkel)) * lengde * 10));
-        int endY = startY + (int) (Math.sin(Math.toRadians((vinkel)) * lengde * 10));
-        Line linje = new Line(startX, startY, endX, endY);
-        canvas.getChildren().add(linje);
-        branch(endX, endY, vinkel-20, lengde-1);
-        branch(endX, endY, vinkel+20, lengde-1);*/
+        branch(endX, endY, vinkel - Math.PI / 8, antallRekursjoner - 1);
+        branch(endX, endY, vinkel + Math.PI / 8, antallRekursjoner - 1);
     }
 }

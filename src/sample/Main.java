@@ -51,6 +51,10 @@ public class Main extends Application {
         lagTre(400,startY, -Math.PI/2, (int) recursionCount.getValue(),
                 branchAngle.getValue(), branchWidth.getValue(), branchSize.getValue(), (int)randomFactorSlider.getValue(), rootInsurance, treeColor.getValue());
 
+        /**
+         * Listeners for alle sliders
+         * Metoden lagTre blir kjørt hver gang en slider blir stilt på
+         */
 
         branchAngle.valueProperty().addListener(((observable, oldValue, newValue) -> {
             canvas.getChildren().clear();
@@ -93,7 +97,20 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
+    /**
+     *
+     * @param      startX   Start x posisjon
+     * @param      startY   Start y posisjon
+     * @param      growingAngle    Retning treet gror ut fra
+     * @param      recursionCount    Antall ganger metoden blir kjørt
+     * @param      branchAngle   Vinkel grener gror ut ifra basen
+     * @param      branchWidth   Tykkhet på grener
+     * @param      branchSize    Lengde på greiner
+     * @param      randomFactor   Tilfeldighets-faktor i gren størrelse og vinkel.
+     * @param      rootInsurance    Garanti for at basen består av minst x antall grener.
+     * @param      treeColor    Fargen på treet
+     *
+     */
     public void lagTre(int startX, int startY, double growingAngle, int recursionCount, double branchAngle,
                        double branchWidth, double branchSize, int randomFactor, int rootInsurance, Color treeColor) {
         if (recursionCount == 0) {
@@ -101,6 +118,8 @@ public class Main extends Application {
         }
         Random random = new Random();
         double randomValue = .85 + (1 - .85) * random.nextDouble();
+        // startX og startY blir til endX og endY hver gang metoden kjører om igjen
+        // så de nye greinene plasserer seg der de gamle slutta.
         int endX = startX + (int) (Math.cos(growingAngle) * (branchSize * randomValue) * 10);
         int endY = startY + (int) (Math.sin(growingAngle) * (branchSize* randomValue) * 10);
 
@@ -110,7 +129,11 @@ public class Main extends Application {
         canvas.getChildren().add(line);
 
 
-
+        /**
+         * Først sjekker vi at rootInsurance er 0 (som betyr at treet har en god basis)
+         * Også bruker vi parameter random til å bestemmer om metoden kalles om igjen eller ikke (ny gren eller ikke)
+         * Deretter kaller vi metoden 2 ganger til (1 i hver retning), som igjen kaller seg selv 2 nye ganger.
+         */
         if(rootInsurance == 0) {
             if (random.nextInt(100) > randomFactor)
                 lagTre(endX, endY, growingAngle - Math.PI / (branchAngle * randomValue), recursionCount - 1,
@@ -127,6 +150,10 @@ public class Main extends Application {
         }
     }
 
+    /**
+     *
+     * @return returnerer et gridpane med ferdiglagde komponenter
+     */
     private GridPane setInfoVindu(){
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(13, 13, 13,13));
